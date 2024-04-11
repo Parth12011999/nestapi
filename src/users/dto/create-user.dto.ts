@@ -1,5 +1,9 @@
+import { IsNumber, IsString } from "class-validator"
+
 export class CreateUserDto {
-    name: String
-    age: Number
-    address: String
+    @IsString()
+    userName: String
+
+    @IsString()
+    password: Number
 }

@@ -15,13 +15,13 @@ export class UsersService {
 
   findAll() {
     const getUsers = this.userModel.find();
-    const filterUsers = getUsers.where({isDeleted:{$exists:false}})
+    const filterUsers = getUsers.where({ isDeleted: { $exists: false } })
     return filterUsers;
   }
 
-  async findOne(id: string) {
+  async findOne(userName: string): Promise<User> {
     const user = await this.userModel.findOne({
-      _id: id,
+      userName,
       $or: [
         { isDeleted: false },
         { isDeleted: { $exists: false } }
@@ -29,16 +29,19 @@ export class UsersService {
     });
 
     if (!user) {
-      return "User not exist"
+      return null
     }
 
     return user;
   }
 
-  update(id: String, updateUserDto: UpdateUserDto) {
-    const updateSpecificUser = this.userModel.findByIdAndUpdate({ _id: id, }, updateUserDto);
+  async update(updateUserDto: UpdateUserDto) {
+    const updateSpecificUser = await this.userModel.findByIdAndUpdate({ _id: updateUserDto.id, }, updateUserDto);
 
-    return updateSpecificUser;
+    return {
+      id: updateSpecificUser.id,
+      message:'User Updated Successfully'
+    };
   }
 
   remove(id: String) {
